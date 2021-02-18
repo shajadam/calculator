@@ -1,0 +1,64 @@
+﻿@model calculator.ViewModel.CalculatorViewModel
+<div class="row">
+    <h3>Simple Calculator</h3>
+    <div class="col-md-8">
+        @using (Html.BeginForm("Create", "API", FormMethod.Post, new { id = "createForm", role = "form" }))
+        {
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-group row">
+                @Html.LabelFor(m => m.Number1, new { @class = "col-sm-4 col-form-label" })
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Number1, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(m => m.Number2, new { @class = "col-sm-4 col-form-label" })
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Number2, new { @class = "form-control" })
+
+                </div>
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(m => m.Operator, new { @class = "col-sm-4 col-form-label" })
+                <div class="col-sm-8">
+                    @Html.EnumDropDownListFor(m => m.Operator,"", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        }
+        </div>
+    <div class="col-md-4" id="rsltBlck">
+        <h4 class="text-danger" id="rslt"></h4>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script>
+        $(document).ready(function () {
+            $('#createForm').on('submit', function (e) {
+                e.preventDefault();
+                $(this).validate();
+                $.ajax({
+                    async: true,
+                    cache: false,
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: "https://localhost:44389/api/Calculator",
+                    data: $("#createForm").serialize(),
+                    beforeSend: function () {
+                        $("#rslt").empty();
+                    },
+                    success: function (e) {
+                        $("#rslt").append(e);
+                    }
+                });
+
+            });
+        });
+</script>
+} 
